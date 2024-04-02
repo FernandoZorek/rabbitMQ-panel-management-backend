@@ -10,6 +10,16 @@ services:
     depends_on:
       - rabbitmq-panel
 
+  rabbitmq:
+    image: 'rabbitmq:3.9-management'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./custom_rabbitmq_schema.json:/opt/custom-config/custom_rabbitmq_schema.json
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq.plugins:/etc/rabbitmq/enabled_plugins
+
   rabbitmq-panel:
     image: node:20
     working_dir: /app
@@ -20,40 +30,9 @@ services:
     ports:
       - "3030:3030"
     environment:
-      - DB_USER=root
-      - DB_PASSWORD=root
-      - DB_HOST=${HOSTIP}
-      - DB_PORT=3306
-      - DB_SCHEMA=feathers
-    depends_on:
-      db-rabbitmq-panel:
-        condition: service_healthy
-
-  db-rabbitmq-panel:
-    container_name: db-rabbitmq-panel
-    image: mysql:8.0.28
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=rabbitmq
-      # - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_TCP_PORT=3306
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./docker/db/mysql:/var/lib/mysql
-    healthcheck:
-      test: "mysql $$MYSQL_DATABASE -u$$MYSQL_ROOT_PASSWORD -p$$MYSQL_ROOT_PASSWORD -e 'SELECT 1;'"
-      timeout: 3s
-      retries: 3
-
-  rabbitmq:
-    image: 'rabbitmq:3-management'
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    volumes:
-      - './rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf'
-
-
+      - RABBITMQ_HOST=frontend
+      - RABBITMQ_PORT=15672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+    extra_hosts:
+      - "frontend:${HOSTIP}"
