@@ -1,45 +1,105 @@
-# rabbit-mq-panel-management-backend
+# Rabbit MQ Panel Management Backend
+## _rabbitMQ-panel-management-backend_
 
-> rabbitMQ-panel-management-backend
+> The Rabbit MQ Panel Management Backend is a
+> REST API service built using Feathers.js that
+> allows you to manipulate RabbitMQ actions.
+> It provides endpoints for managing queues and
+> moving messages between dead-letter queues (DLX)
+> and regular queues.
 
-## About
+## Features
 
-This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
+- Connect rabbitmq;
+- List queues rabbitmq;
+- Move messages from DLX to respective queue;
 
-## Getting Started
+## Tech
 
-Getting up and running is as easy as 1, 2, 3.
+This project uses several open source projects to function correctly::
 
-1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
-2. Install your dependencies
+- [Docker] - Platform for developing, shipping, and running applications using containerization;
+- [Nginx] - Advanced Load Balancer, Web Server, Reverse Proxy;
+- [Node.js] - JavaScript runtime built on Chrome’s V8 JavaScript engine;
+- [Express.js] - Fast, unopinionated, minimalist web framework for Node.js;
+- [Feathers.js] - The API and Real-time Application Framework;
+- [Rabbit MQ] - RabbitMQ is a reliable and mature messaging and streaming broker, which is easy to deploy on cloud environments, on-premises, and on your local machine;
 
-    ```
-    cd path/to/rabbit-mq-panel-management-backend
-    npm install
-    ```
+## Installation
 
-3. Start your app
+Dillinger requires [Node.js](https://nodejs.org/) v20+ to run.
 
-    ```
-    npm start
-    ```
+Install the dependencies and devDependencies and start the server.
 
-## Testing
-
-Simply run `npm test` and all your tests in the `test/` directory will be run.
-
-## Scaffolding
-
-Feathers has a powerful command line interface. Here are a few things it can do:
-
+```bash
+yarn
 ```
-$ npm install -g @feathersjs/cli          # Install Feathers CLI
+### Open hosts file:
 
-$ feathers generate service               # Generate a new Service
-$ feathers generate hook                  # Generate a new Hook
-$ feathers help                           # Show all commands
+```sh
+sudo nano /etc/hosts
 ```
 
-## Help
+### Add new line:
 
-For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+```sh
+127.0.0.1       frontend
+```
+### Start the app in development mode (hot-code reloading, error reporting, etc.)
+
+```bash
+docker-compose up
+```
+
+### Usage
+##### List Queues
+**Endpoint:** GET /queues
+**Description:** Retrieves a list of queues along with their details.
+**Response:**
+```sh
+[
+  {
+    "name": "Teste Queue",
+    "total": 0,
+    "unack": 0,
+    "ready": 0,
+    "dlx": false,
+    "queue": "test_queue"
+  },
+  {
+    "name": "Teste Queue DLX",
+    "total": 0,
+    "unack": 0,
+    "ready": 0,
+    "dlx": true,
+    "queue": "test_queue_dlx"
+  },
+  // ... other queues
+]
+```
+
+##### Move Message from DLX to Regular Queue
+**Endpoint:** POST /queues/move
+**Description:** Moves a message from a dead-letter queue (DLX) to a regular queue.
+**Request Body:**
+```sh
+{
+  "queue": "test2_queue_dlx"
+}
+});
+```
+
+
+## License
+
+MIT
+**Free Software, Hell Yeah!**
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+[Docker]: <https://docs.docker.com/>
+[Nginx]: <https://www.nginx.com/>
+[Node.js]: <https://nodejs.org/docs/latest/api/>
+[Feathers.js]: <https://feathersjs.com/api/>
+[Express.js]: <https://expressjs.com/en/guide/routing.html>
+[Rabbit MQ]: <https://www.rabbitmq.com/>
+
